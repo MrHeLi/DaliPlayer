@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">DaliPlayer</string>
+    <string name="list_path_default_name">media path</string>
+</resources>
