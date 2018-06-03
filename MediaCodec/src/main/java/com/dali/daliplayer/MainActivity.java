@@ -1,31 +1,65 @@
 package com.dali.daliplayer;
 
-import android.app.Activity;
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.widget.Toast;
 
 import com.dali.utils.FileUtils;
+import com.dali.utils.MediaFile;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends Activity {
+public class MainActivity extends AppCompatActivity {
     private String Tag = MainActivity.class.getSimpleName();
     private RecyclerView recycler;
-    private List<String> mediaLists;
+    private List<MediaFile> mediaLists;
     private MeidaAdapter meidaAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        initMediaLists();
-        initRecyclerView();
+        permission();
+    }
 
+    private void init() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                initMediaLists();
+                initRecyclerView();
+            }
+        });
+    }
 
+    private void permission() {
+        if (!(ContextCompat.checkSelfPermission(this,
+                Manifest.permission.READ_EXTERNAL_STORAGE) ==
+                PackageManager.PERMISSION_GRANTED)) {
+            ActivityCompat.requestPermissions(this,
+                    new String[] {Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
+        } else {
+            init();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == 1) {
+            int grantResult = grantResults[0];
+            boolean granted = grantResult == PackageManager.PERMISSION_GRANTED;
+            init();
+        }
     }
 
     private void initMediaLists() {//"/storage/emulated/Movies"
@@ -33,13 +67,18 @@ public class MainActivity extends Activity {
         FileUtils.loadMedias(path);
         FileUtils.setOnFileLoadedListener(new FileUtils.OnFileLoadListener() {
             @Override
-            public void onLoad(final List<String> medias) {
+            public void onLoad(final List<MediaFile> medias) {
                 for (int i = 0; i < medias.size(); i++) {
                     if (!mediaLists.contains(medias.get(i))) {
                         mediaLists.add(medias.get(i));
                     }
                 }
-                meidaAdapter.notifyDataSetChanged();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        meidaAdapter.notifyDataSetChanged();
+                    }
+                });
             }
         });
         Toast.makeText(this, path, Toast.LENGTH_SHORT).show();

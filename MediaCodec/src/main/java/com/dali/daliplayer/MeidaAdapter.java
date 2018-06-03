@@ -8,13 +8,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.dali.utils.MediaFile;
+
 import java.util.List;
 
 class MeidaAdapter extends RecyclerView.Adapter<MeidaAdapter.MediaHolder> {
     private LayoutInflater inflater;
-    private List<String> mediaLists;
+    private List<MediaFile> mediaLists;
 
-    public MeidaAdapter(Context context, List<String> mediaLists) {
+    public MeidaAdapter(Context context, List<MediaFile> mediaLists) {
         inflater = LayoutInflater.from(context);
         this.mediaLists = mediaLists;
     }
@@ -28,7 +30,7 @@ class MeidaAdapter extends RecyclerView.Adapter<MeidaAdapter.MediaHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull MediaHolder holder, int position) {
-        holder.btn_media.setText(mediaLists.get(position));
+        holder.btn_media.setText(mediaLists.get(position).getName());
     }
 
     @Override

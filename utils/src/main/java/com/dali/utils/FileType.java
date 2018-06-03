@@ -14,7 +14,6 @@ public class FileType {
                 }
             }
         }
-
         return false;
     }
 }

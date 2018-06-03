@@ -12,9 +12,9 @@ import java.util.TimerTask;
 
 public class FileUtils {
     private static String Tag = FileUtils.class.getSimpleName();
-    private static List<String> medias = new ArrayList<>();
+    private static List<MediaFile> medias = new ArrayList<>();
     public interface OnFileLoadListener {
-        void onLoad(List<String> medias);
+        void onLoad(List<MediaFile> medias);
     }
     public static OnFileLoadListener loadedListener;
     public static void setOnFileLoadedListener(OnFileLoadListener listener) {
@@ -37,7 +37,6 @@ public class FileUtils {
             timer.schedule(new TimerTask() {
                 @Override
                 public void run() {
-                    Log.i(Tag, "time ... ");
                     if (loadedListener != null) {
                         loadedListener.onLoad(medias);
                     }
@@ -87,11 +86,24 @@ public class FileUtils {
                 }
             } else {
                 if (FileType.isMeidaFile(file.getAbsolutePath())) {
-                    Log.i(Tag, "limitedRecurFileLoad: " + file.getAbsolutePath());
-                    medias.add(path);
+                    MediaFile cFile = parsePath2Media(path);
+                    if (!medias.contains(cFile)) {
+                        medias.add(cFile);
+//                        Log.i(Tag, "new path = " + cFile.getPath());
+                    }
                 }
             }
         }
+    }
+
+    public static MediaFile parsePath2Media(String path) {
+        if (TextUtils.isEmpty(path) && !FileType.isMeidaFile(path)) {
+            return null;
+        }
+        int index = path.lastIndexOf(File.separator);
+        String name = path.substring(index + 1, path.length());
+        MediaFile file = new MediaFile(path, name);
+        return file;
     }
 
 }
