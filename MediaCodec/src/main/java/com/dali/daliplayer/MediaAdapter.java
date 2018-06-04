@@ -12,11 +12,28 @@ import com.dali.utils.MediaFile;
 
 import java.util.List;
 
-class MeidaAdapter extends RecyclerView.Adapter<MeidaAdapter.MediaHolder> {
+class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.MediaHolder> implements View.OnClickListener {
+    private String Tag = MediaAdapter.class.getName();
     private LayoutInflater inflater;
     private List<MediaFile> mediaLists;
 
-    public MeidaAdapter(Context context, List<MediaFile> mediaLists) {
+    @Override
+    public void onClick(View v) {
+        if (mOnItemClickListener != null) {
+            mOnItemClickListener.onItemClick(v, ((int)v.getTag()));
+        }
+    }
+
+    public interface OnItemClickListener {
+        void onItemClick(View view, int position);
+    }
+    public OnItemClickListener mOnItemClickListener = null;
+
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        mOnItemClickListener = listener;
+    }
+
+    public MediaAdapter(Context context, List<MediaFile> mediaLists) {
         inflater = LayoutInflater.from(context);
         this.mediaLists = mediaLists;
     }
@@ -24,13 +41,17 @@ class MeidaAdapter extends RecyclerView.Adapter<MeidaAdapter.MediaHolder> {
     @NonNull
     @Override
     public MediaHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        MediaHolder holder = new MediaHolder(inflater.inflate(R.layout.item_media, parent, false));
+        View view = inflater.inflate(R.layout.item_media, parent, false);
+        MediaHolder holder = new MediaHolder(view);
+        Button btn = view.findViewById(R.id.btn_item_media);
+        btn.setOnClickListener(this);
         return holder;
     }
 
     @Override
     public void onBindViewHolder(@NonNull MediaHolder holder, int position) {
         holder.btn_media.setText(mediaLists.get(position).getName());
+        holder.btn_media.setTag(position);
     }
 
     @Override

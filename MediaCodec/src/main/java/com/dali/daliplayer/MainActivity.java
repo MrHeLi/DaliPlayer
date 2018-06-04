@@ -10,7 +10,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.widget.Toast;
+import android.view.View;
 
 import com.dali.utils.FileUtils;
 import com.dali.utils.MediaFile;
@@ -18,11 +18,11 @@ import com.dali.utils.MediaFile;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements MediaAdapter.OnItemClickListener{
     private String Tag = MainActivity.class.getSimpleName();
     private RecyclerView recycler;
     private List<MediaFile> mediaLists;
-    private MeidaAdapter meidaAdapter;
+    private MediaAdapter meidaAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,15 +81,19 @@ public class MainActivity extends AppCompatActivity {
                 });
             }
         });
-        Toast.makeText(this, path, Toast.LENGTH_SHORT).show();
         mediaLists = new ArrayList<>();
     }
 
     private void initRecyclerView() {
         recycler = findViewById(R.id.recycler);
-        meidaAdapter = new MeidaAdapter(this, mediaLists);
+        meidaAdapter = new MediaAdapter(this, mediaLists);
+        meidaAdapter.setOnItemClickListener(this);
         recycler.setLayoutManager(new LinearLayoutManager(this));
         recycler.setAdapter(meidaAdapter);
     }
 
+    @Override
+    public void onItemClick(View view, int position) {
+
+    }
 }
