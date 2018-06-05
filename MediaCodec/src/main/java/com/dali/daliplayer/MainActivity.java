@@ -94,6 +94,6 @@ public class MainActivity extends AppCompatActivity implements MediaAdapter.OnIt
 
     @Override
     public void onItemClick(View view, int position) {
-
+        FFmpegJni.play(mediaLists.get(position).getPath());
     }
 }
