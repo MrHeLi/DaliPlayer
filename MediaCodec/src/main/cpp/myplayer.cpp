@@ -3,8 +3,8 @@
 #include "android/log.h"
 extern "C"
 {
-//#include "libavcodec/avcodec.h"
-//#include <libavformat/avformat.h>
+#include "libavcodec/avcodec.h"
+#include <libavformat/avformat.h>
 }
 
 #define LOGI(...) __android_log_print(ANDROID_LOG_INFO, "ffmpeg jni", __VA_ARGS__);
@@ -26,7 +26,7 @@ Java_com_dali_daliplayer_FFmpegJni_play(JNIEnv *env, jclass type, jstring path_)
 
     // TODO
     LOGI("path = %s", path);
-//    av_register_all();
+    av_register_all();
 //    avcodec_register_all();
     env->ReleaseStringUTFChars(path_, path);
 }
