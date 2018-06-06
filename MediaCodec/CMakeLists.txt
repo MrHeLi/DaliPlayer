@@ -9,7 +9,7 @@ cmake_minimum_required(VERSION 3.4.1)
 # or SHARED, and provides the relative paths to its source code.
 # You can define multiple libraries, and CMake builds them for you.
 # Gradle automatically packages shared libraries with your APK.
-
+set( lib_src_DIR ${CMAKE_SOURCE_DIR}/src/main/jniLibs/armeabi)
 add_library( # Sets the name of the library.
              myplayer
 
@@ -18,13 +18,20 @@ add_library( # Sets the name of the library.
 
              # Provides a relative path to your source file(s).
              src/main/cpp/myplayer.cpp )
+add_library( avformat-57
+             SHARED
+             IMPORTED )
+set_target_properties( avformat-57
+                       PROPERTIES IMPORTED_LOCATION
+                       ${lib_src_DIR}/libavformat-57.so )
+
 
 # Searches for a specified prebuilt library and stores the path as a
 # variable. Because CMake includes system libraries in the search path by
 # default, you only need to specify the name of the public NDK library
 # you want to add. CMake verifies that the library exists before
 # completing its build.
-
+include_directories( ${CMAKE_SOURCE_DIR}/src/main/cpp/ffmpeg )
 find_library( # Sets the name of the path variable.
               log-lib
 
@@ -39,6 +46,7 @@ find_library( # Sets the name of the path variable.
 target_link_libraries( # Specifies the target library.
                        myplayer
 
+                       avformat-57
                        # Links the target library to the log library
                        # included in the NDK.
                        ${log-lib} )
