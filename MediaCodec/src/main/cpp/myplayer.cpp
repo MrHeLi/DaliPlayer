@@ -1,7 +1,8 @@
 #include <jni.h>
 #include <string>
 #include "android/log.h"
-extern "C" {
+extern "C"
+{
 //#include "libavcodec/avcodec.h"
 //#include <libavformat/avformat.h>
 }
