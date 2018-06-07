@@ -5,6 +5,7 @@ extern "C"
 {
 #include "libavcodec/avcodec.h"
 #include <libavformat/avformat.h>
+#include <libswresample/swresample.h>
 }
 
 #define LOGW(...) __android_log_print(ANDROID_LOG_WARN, "ffmpeg jni", __VA_ARGS__);
@@ -34,7 +35,7 @@ Java_com_dali_daliplayer_FFmpegJni_play(JNIEnv *env, jclass type, jstring path_)
     AVFormatContext *formatCtx = avformat_alloc_context();
     int result = avformat_open_input(&formatCtx, path, NULL, NULL);
     if (result != 0) {
-        LOGW("%s open failde!" , path);
+        LOGW("%s open failed!" , path);
         return;
     }
     LOGI("duration = %lld, streamCount = %d", formatCtx->duration, formatCtx->nb_streams);
@@ -61,6 +62,33 @@ Java_com_dali_daliplayer_FFmpegJni_play(JNIEnv *env, jclass type, jstring path_)
             LOGI("stream %d 是一个字幕", i);
         }
     }
+
+    //查找解碼器
+    //audio
+    AVCodec *audioCodec = avcodec_find_decoder(formatCtx->streams[audioStream]->codecpar->codec_id);
+    if (!audioCodec) {
+        LOGW("cannot find specified audio codec");
+        return;
+    }
+    AVCodecContext *audioCodecContext = avcodec_alloc_context3(audioCodec);
+    int openCodecError = 0;
+    if ((openCodecError = avcodec_open2(audioCodecContext, audioCodec, NULL)) < 0) {
+        LOGW("cannot open specified audio codec");
+    }
+
+    //video
+    AVCodec *videoCodec = avcodec_find_decoder(formatCtx->streams[videoStream]->codecpar->codec_id);
+    if (!videoCodec) {
+        LOGW("cannot find specified video codec");
+    }
+    AVCodecContext *videoCodecContext = avcodec_alloc_context3(videoCodec);
+    if ((openCodecError = avcodec_open2(videoCodecContext, videoCodec, NULL)) < 0) {
+        LOGW("cannot open specified video codec");
+    }
+    //分配解码后的数据存储位置
+    //音频
+    //视频
+
 
     avformat_close_input(&formatCtx);
     env->ReleaseStringUTFChars(path_, path);
