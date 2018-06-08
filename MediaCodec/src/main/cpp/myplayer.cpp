@@ -86,6 +86,33 @@ Java_com_dali_daliplayer_FFmpegJni_play(JNIEnv *env, jclass type, jstring path_)
         LOGW("cannot open specified video codec");
     }
     //分配解码后的数据存储位置
+    AVPacket* avPacket = av_packet_alloc();
+    AVFrame* avFrame = av_frame_alloc();
+    for (;;) {
+        int re = av_read_frame(formatCtx, avPacket);
+        if (re != 0) {
+            LOGW("EOF")
+//            av_seek_frame(formatCtx, videoStream,  formatCtx->duration/2,
+//                          AVSEEK_FLAG_BACKWARD|AVSEEK_FLAG_FRAME);
+            break;
+        }
+        if (avPacket->stream_index != videoStream) {
+            continue;
+        }
+        LOGI("Stream %d, size = %d, pts = %d, flag = %d",
+        avPacket->stream_index, avPacket->size, avPacket->pts, avPacket->flags);
+        re = avcodec_send_packet(videoCodecContext, avPacket);
+        av_packet_unref(avPacket);
+        if (re != 0) {
+            LOGW("packet send error");
+        }
+        re = avcodec_receive_frame(videoCodecContext, avFrame);
+        if (re != 0) {
+            LOGW("frame receive error");
+        }
+        LOGI("avcodec_receive_frame fps = %lld", avFrame->pts);
+
+    }
     //音频
     //视频
 
