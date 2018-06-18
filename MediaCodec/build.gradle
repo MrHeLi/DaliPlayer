@@ -1,11 +1,11 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 27
+    compileSdkVersion 26
     defaultConfig {
         applicationId "com.dali.daliplayer"
         minSdkVersion 15
-        targetSdkVersion 27
+        targetSdkVersion 26
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -13,6 +13,10 @@ android {
             cmake {
                 cppFlags ""
             }
+            ndk {
+                abiFilters "armeabi"
+            }
+
         }
         ndk {
             abiFilters "armeabi"
@@ -28,6 +32,11 @@ android {
         cmake {
             path "CMakeLists.txt"
         }
+    }
+
+    sourceSets.main{
+        jni.srcDirs = ['src/main/cpp']
+        jniLibs.srcDirs = ['src/main/jniLibs']
     }
 }
 

@@ -2,7 +2,7 @@ package com.dali.utils;
 
 public class FileType {
     private static String Tag = FileType.class.getSimpleName();
-    private static String[] media_type = {"mp4"};
+    private static String[] media_type = {"mp4","flv"};
 
     public static boolean isMeidaFile(String path) {
         int index = path.lastIndexOf(".");

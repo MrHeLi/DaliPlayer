@@ -685,6 +685,7 @@ enum AVCodecID {
                                 * stream (only used by libavformat) */
     AV_CODEC_ID_FFMETADATA = 0x21000,   ///< Dummy codec for streams containing only metadata information.
     AV_CODEC_ID_WRAPPED_AVFRAME = 0x21001, ///< Passthrough codec, AVFrames wrapped in AVPacket
+<<<<<<< HEAD
 };enum AVCodecID {
     AV_CODEC_ID_NONE,
 
@@ -1159,6 +1160,8 @@ enum AVCodecID {
                                 * stream (only used by libavformat) */
     AV_CODEC_ID_FFMETADATA = 0x21000,   ///< Dummy codec for streams containing only metadata information.
     AV_CODEC_ID_WRAPPED_AVFRAME = 0x21001, ///< Passthrough codec, AVFrames wrapped in AVPacket
+=======
+>>>>>>> 5940151616ee17a59b2a690a443d061717f76f9e
 };
 
 /**

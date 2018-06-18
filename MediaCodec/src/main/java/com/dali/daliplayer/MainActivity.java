@@ -15,6 +15,7 @@ import android.view.View;
 import com.dali.utils.FileUtils;
 import com.dali.utils.MediaFile;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -64,7 +65,7 @@ public class MainActivity extends AppCompatActivity implements MediaAdapter.OnIt
 
     private void initMediaLists() {//"/storage/emulated/Movies"
         String path = Environment.getExternalStorageDirectory().getAbsolutePath();
-        FileUtils.loadMedias(path);
+        FileUtils.loadMedias(path + File.separator + "Movies");
         FileUtils.setOnFileLoadedListener(new FileUtils.OnFileLoadListener() {
             @Override
             public void onLoad(final List<MediaFile> medias) {
