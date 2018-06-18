@@ -1,18 +1,8 @@
 #include <jni.h>
 #include <string>
 #include "android/log.h"
-<<<<<<< HEAD
-<<<<<<< HEAD
-
-#define LOGI(...) __android_log_print(ANDROID_LOG_INFO, "ffmpeg jni", __VA_ARGS__);
-extern "C" {
-#include <libavcodec/avcodec.h>
-#include <libavformat/avformat.h>
-=======
-=======
 #include <android/native_window.h>
 #include <android/native_window_jni.h>
->>>>>>> dev
 extern "C"
 {
 #include <libavcodec/avcodec.h>
@@ -44,7 +34,6 @@ jint JNI_OnLoad(JavaVM *vm,void *res)
 {
     av_jni_set_java_vm(vm,0);
     return JNI_VERSION_1_4;
->>>>>>> 5940151616ee17a59b2a690a443d061717f76f9e
 }
 
 extern "C" JNIEXPORT jstring
@@ -70,9 +59,6 @@ Java_com_dali_daliplayer_FFmpegJni_startPlay(JNIEnv *env, jclass type, jstring u
 
     // TODO
     LOGI("path = %s", path);
-<<<<<<< HEAD
-    av_register_all();
-=======
     avformat_network_init();//注册网络协议
     av_register_all();//注册格式，编解码器
     AVFormatContext *formatCtx = avformat_alloc_context();
@@ -280,10 +266,5 @@ Java_com_dali_daliplayer_FFmpegJni_startPlay(JNIEnv *env, jclass type, jstring u
     delete pcm;
 
     avformat_close_input(&formatCtx);
-<<<<<<< HEAD
->>>>>>> 5940151616ee17a59b2a690a443d061717f76f9e
-    env->ReleaseStringUTFChars(path_, path);
-=======
     env->ReleaseStringUTFChars(url_, path);
->>>>>>> dev
 }
