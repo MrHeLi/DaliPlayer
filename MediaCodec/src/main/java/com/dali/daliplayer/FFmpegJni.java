@@ -12,4 +12,6 @@ public class FFmpegJni {
         System.loadLibrary("myplayer");
     }
     public static native void play(String path);
+
+    public static native void startPlay(String url, Object surface);
 }

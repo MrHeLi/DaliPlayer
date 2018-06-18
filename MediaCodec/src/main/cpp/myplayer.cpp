@@ -1,6 +1,8 @@
 #include <jni.h>
 #include <string>
 #include "android/log.h"
+#include <android/native_window.h>
+#include <android/native_window_jni.h>
 extern "C"
 {
 #include <libavcodec/avcodec.h>
@@ -47,6 +49,13 @@ extern "C"
 JNIEXPORT void JNICALL
 Java_com_dali_daliplayer_FFmpegJni_play(JNIEnv *env, jclass type, jstring path_) {
     const char *path = env->GetStringUTFChars(path_, 0);
+
+    env->ReleaseStringUTFChars(path_, path);
+}
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_dali_daliplayer_FFmpegJni_startPlay(JNIEnv *env, jclass type, jstring url_, jobject surface) {
+    const char *path = env->GetStringUTFChars(url_, 0);
 
     // TODO
     LOGI("path = %s", path);
@@ -152,6 +161,11 @@ Java_com_dali_daliplayer_FFmpegJni_play(JNIEnv *env, jclass type, jstring path_)
         LOGI("swr_init success!");
     }
 
+    //显示窗口初始化
+//    ANativeWindow *nwin = ANativeWindow_fromSurface(env, surface);
+    ANativeWindow *nwin = ANativeWindow_fromSurface(env,surface);
+    ANativeWindow_setBuffersGeometry(nwin,outWidth,outHeight,WINDOW_FORMAT_RGBA_8888);
+    ANativeWindow_Buffer wbuf;
 
     for (;;) {
 
@@ -164,9 +178,11 @@ Java_com_dali_daliplayer_FFmpegJni_play(JNIEnv *env, jclass type, jstring path_)
         int re = av_read_frame(formatCtx, avPacket);
         if (re != 0) {
             LOGI("已经读到流结尾");//记得传递空帧
-            int pos = 20 * r2d(formatCtx->streams[videoStream]->time_base);
-            av_seek_frame(formatCtx,videoStream,pos,AVSEEK_FLAG_BACKWARD|AVSEEK_FLAG_FRAME );
-            continue;
+//            int pos = 20 * r2d(formatCtx->streams[videoStream]->time_base);
+//            av_seek_frame(formatCtx,videoStream,pos,AVSEEK_FLAG_BACKWARD|AVSEEK_FLAG_FRAME );
+//            continue;
+            re = avcodec_send_packet(videoCodecContext, NULL);
+            break;
         }
 //        LOGW("stream = %d size =%d pts=%lld flag=%d",
 //                     avPacket->stream_index,avPacket->size,avPacket->pts,avPacket->flags
@@ -221,6 +237,14 @@ Java_com_dali_daliplayer_FFmpegJni_play(JNIEnv *env, jclass type, jstring path_)
                                       avFrame->height,
                                       data,lines);
                     LOGW("sws_scale = %d",h);
+
+                    if (h > 0) {
+                        LOGW("执行到这里了么");
+                        ANativeWindow_lock(nwin,&wbuf,0);
+                        uint8_t *dst = (uint8_t*)wbuf.bits;
+                        memcpy(dst,rgb,outWidth*outHeight*4);
+                        ANativeWindow_unlockAndPost(nwin);
+                    }
                 }
             } else if (cc == audioCodecContext) {//音频重采样
                 uint8_t *out[2] = {0};
@@ -242,5 +266,5 @@ Java_com_dali_daliplayer_FFmpegJni_play(JNIEnv *env, jclass type, jstring path_)
     delete pcm;
 
     avformat_close_input(&formatCtx);
-    env->ReleaseStringUTFChars(path_, path);
+    env->ReleaseStringUTFChars(url_, path);
 }
