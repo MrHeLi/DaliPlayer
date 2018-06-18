@@ -1,15 +1,18 @@
 package com.dali.daliplayer;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 
 import com.dali.utils.FileUtils;
@@ -95,6 +98,11 @@ public class MainActivity extends AppCompatActivity implements MediaAdapter.OnIt
 
     @Override
     public void onItemClick(View view, int position) {
-        FFmpegJni.play(mediaLists.get(position).getPath());
+        Log.i(this.getClass().getSimpleName(), "onItemClick time = " + SystemClock.currentThreadTimeMillis());
+        Intent intent = new Intent(this, PlayActivity.class);
+        intent.putExtra("url", mediaLists.get(position).getPath());
+        startActivity(intent);
+        Log.i("TAG", "startActivity");
+//        FFmpegJni.play(mediaLists.get(position).getPath());
     }
 }

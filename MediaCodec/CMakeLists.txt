@@ -132,6 +132,7 @@ include_directories(src/main/cpp/ffmpeg/)
 target_link_libraries( # Specifies the target library.
                        myplayer
 <<<<<<< HEAD
+<<<<<<< HEAD
 
                        avcodec-57
                        avdevice-57
@@ -143,6 +144,9 @@ target_link_libraries( # Specifies the target library.
 
 =======
 >>>>>>> 5940151616ee17a59b2a690a443d061717f76f9e
+=======
+                       android
+>>>>>>> dev
 
                        avformat-57
                        avcodec-57
